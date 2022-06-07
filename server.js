@@ -94,7 +94,7 @@ app.get("/fruits/seed", (req, res) => {
 
 
 
-// The Async/Await Method //index route
+// Index Route / The Async/Await Method
 app.get("/fruits", async (req, res) => { //async looks for any kind of awaits - async knows it has to wait for await to finsh running before it will run it's function
     const fruits = await Fruit.find({}) // Fruits.find({}) takes a long time to run
     // await has it wait a second allowing Fruits.find({}) to run before it runs allowing the data to be retrived from the database
