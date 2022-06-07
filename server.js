@@ -93,66 +93,53 @@ app.get("/fruits/seed", (req, res) => {
   });
 });
 
-
-
 // Index Route / The Async/Await Method
-app.get("/fruits", async (req, res) => { //async looks for any kind of awaits - async knows it has to wait for await to finsh running before it will run it's function
-    const fruits = await Fruit.find({}) // Fruits.find({}) takes a long time to run
-    // await has it wait a second allowing Fruits.find({}) to run before it runs allowing the data to be retrived from the database
-    res.render("fruits/index.liquid", {fruits})
-    
-})
+app.get("/fruits", async (req, res) => {
+  //async looks for any kind of awaits - async knows it has to wait for await to finsh running before it will run it's function
+  const fruits = await Fruit.find({}); // Fruits.find({}) takes a long time to run
+  // await has it wait a second allowing Fruits.find({}) to run before it runs allowing the data to be retrived from the database
+  res.render("fruits/index.liquid", { fruits });
+});
 
+//NEW ROUTE
+app.get("/fruits/new", (req, res) => {
+  res.render("fruits/new");
+});
 
+// CREATE route
+app.post("/fruits", (req, res) => {
+  // check if the readyToEat property should be true or false
+  req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
+  // create the new fruit
+  Fruit.create(req.body)
+    .then((fruits) => {
+      // redirect user to index page if successfully created item
+      res.redirect("/fruits");
+    })
+    // send error as json
+    .catch((error) => {
+      console.log(error);
+      res.json({ error });
+    });
+});
 
 //SHOW ROUTE SHOULD ALWAYS BE NEAR TO BOTTOM TO AVOID MESS UP WITH EARLIER PAGES
 // show route
 app.get("/fruits/:id", (req, res) => {
-    // get the id from params
-    const id = req.params.id;
-  
-    // find the particular fruit from the database
-    Fruit.findById(id)
-      .then((fruit) => {
-        // render the template with the data from the database
-        res.render("fruits/show.liquid", { fruit });
-      })
-      .catch((error) => {
-        console.log(error);
-        res.json({ error });
-      });
-  });
-  
+  // get the id from params
+  const id = req.params.id;
 
-  //NEW ROUTE
-  app.get("/fruits/new", (req, res) => {
-      res.render("/fruits/new.liquid")
-  });
-
-
-// CREATE route
-app.post("/fruits", (req, res) => {
-    // check if the readyToEat property should be true or false
-    req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
-    // create the new fruit
-    Fruit.create(req.body)
-      .then((fruits) => {
-        // redirect user to index page if successfully created item
-        res.redirect("/fruits");
-      })
-      // send error as json
-      .catch((error) => {
-        console.log(error);
-        res.json({ error });
-      });
-  });
-  
-
-
-
-
-
-
+  // find the particular fruit from the database
+  Fruit.findById(id)
+    .then((fruit) => {
+      // render the template with the data from the database
+      res.render("fruits/show.liquid", { fruit });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.json({ error });
+    });
+});
 
 //////////////////////////////////////////////
 // Server Listener
@@ -161,6 +148,3 @@ const PORT = process.env.PORT; // variable port that I'm pulling from the .env -
 app.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });
-
-
-
