@@ -636,7 +636,7 @@ app.delete("/fruits/:id", (req, res) => {
       res.json({ error });
     });
 });
-```
+
 
 Success, you now have full crud functionality!
 
